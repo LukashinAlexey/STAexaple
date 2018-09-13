@@ -2,8 +2,9 @@
 
 int main()
 {
-	int nombersCount = 0;
-	int *  arr = new int[5];
+	const int INITIAL_ALLOCATION_SIZE = 10;
+	int *  pData = new int[INITIAL_ALLOCATION_SIZE];
+	int nUsed = 0, nAllocated = INITIAL_ALLOCATION_SIZE;
 	while (true)
 	{
 		int temp;
@@ -11,18 +12,31 @@ int main()
 
 		if (std::cin)
 		{
-			arr[nombersCount++] = temp;
+			if (nUsed == nAllocated)
+			{
+				int nAllocatedNew = nAllocated * 2;
+				int * pNewData = new int[nAllocatedNew];
+
+				memcpy(pNewData, pData, sizeof(int)*nAllocated);
+
+
+				delete[] pData;
+				pData = pNewData;
+
+				nAllocated = nAllocatedNew;
+			}
+			pData[nUsed++] = temp;
 
 		}
 		else
 			break;
 		
 	}
-	for (int i = nombersCount - 1; i >= 0; i--)
+	for (int i = nUsed - 1; i >= 0; i--)
 	{
-		std::cout << arr[i] << ' ';
+		std::cout << pData[i] << ' ';
 	}
-	delete[] arr;
+	delete[] pData;
 	system("pause");
 	return 0;
 }
